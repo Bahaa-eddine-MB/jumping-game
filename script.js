@@ -163,6 +163,20 @@ function drawBackgroundLine() {
 
 let arrayBlocks = [];
 
+function blockColliding(player, block) {
+  let s1 = Object.assign(Object.create(Object.getPrototypeOf(player)), player);
+  let s2 = Object.assign(Object.create(Object.getPrototypeOf(block)), block);
+
+  return !(
+    (
+      s1.x > s2.x + s2.width || // r1 is to right of r2
+      s1.x + 115 < s2.x || // r1 to the left of r2
+      s1.y > s2.y + s2.height || // r1 is below r2
+      s1.y + 50 < s2.y // r1 is above r2
+    ) 
+  );
+}
+
 function generateBlocks() {
   let timeDelay = getRandomNumber(500, 2000);
   if (Math.random() < 0.2) {
@@ -184,15 +198,25 @@ function generateBlocks() {
       )
     );
   }
+  enemySpeed += enemySpeed * 0.02;
   setTimeout(generateBlocks, timeDelay);
 }
-
+let animationId = null;
 function animate() {
-  requestAnimationFrame(animate);
+  animationId = requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackgroundLine();
-  arrayBlocks.forEach((element) => {
+  arrayBlocks.forEach((element, index) => {
     element.slide();
+    if (blockColliding(player, element)) {
+      cancelAnimationFrame(animationId);
+    }
+    // Delete block that has left the screen
+    if (arrayBlocks.x + arrayBlocks.width <= 0) {
+      setTimeout(() => {
+        arrayBlocks.splice(index, 1);
+      }, 0);
+    }
   });
   player.draw();
 }
