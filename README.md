@@ -2,6 +2,10 @@
 
 Welcome to the Mini Marion Canvas Game! This is a simple game built using HTML5 canvas and JavaScript. 
 
+## Deployment
+
+You can play the game online by visiting the [deployment link](https://bahaa-eddine-mb.github.io/jumping-game/).
+
 ## Instructions
 
 1. Clone or download the repository to your local machine.
