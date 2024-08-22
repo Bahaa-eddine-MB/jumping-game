@@ -216,7 +216,7 @@ function blockColliding(player, block) {
 }
 
 function generateBlocks() {
-  let timeDelay = getRandomNumber(1000, 3000);
+  let timeDelay = getRandomNumber(800, 2500);
   if (Math.random() < 0.2) {
     arrayBlocks.push(
       new AvoidBlock(
