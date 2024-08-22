@@ -17,10 +17,13 @@ class Player {
     this.x = x;
     this.y = y;
     this.shouldJump = false;
+    this.jumpUp = true;
+    this.jumpHeight = 10;
     this.jumpCounter = 0;
   }
 
   draw() {
+    this.jump();
     var marioArray = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0],
@@ -76,6 +79,25 @@ class Player {
       xPos = 50;
       //move down 5px
       yPos += 5;
+    }
+  }
+
+  jump() {
+    if (this.shouldJump) {
+      this.jumpCounter++;
+      if (this.jumpCounter < 30) {
+        //Go up
+        this.y -= this.jumpHeight;
+      } else if (this.jumpCounter > 29 && this.jumpCounter < 35) {
+        this.y += 0;
+      } else if (this.jumpCounter < 64) {
+        //Come back down
+        this.y += this.jumpHeight;
+      }
+      //End the cycle
+      if (this.jumpCounter >= 63) {
+        this.shouldJump = false;
+      }
     }
   }
 }
@@ -172,8 +194,8 @@ function blockColliding(player, block) {
       s1.x > s2.x + s2.width || // r1 is to right of r2
       s1.x + 115 < s2.x || // r1 to the left of r2
       s1.y > s2.y + s2.height || // r1 is below r2
-      s1.y + 50 < s2.y // r1 is above r2
-    ) 
+      s1.y + 50 < s2.y
+    ) // r1 is above r2
   );
 }
 
@@ -225,4 +247,14 @@ animate();
 
 setTimeout(() => {
   generateBlocks();
-}, getRandomNumber(500, 2000));
+}, 2000);
+
+//Event Listeners
+addEventListener("keydown", (e) => {
+  if (e.code === "Space") {
+    if (!player.shouldJump) {
+      player.jumpCounter = 0;
+      player.shouldJump = true;
+    }
+  }
+});
