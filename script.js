@@ -253,6 +253,9 @@ function startGame() {
     requestAnimationFrame(animate);
   }
   currentScore = 0;
+  setTimeout(() => {
+    generateBlocks();
+  }, 2000);
 }
 
 function gameEnded() {
@@ -300,10 +303,6 @@ function animate() {
   player.draw();
 }
 animate();
-
-setTimeout(() => {
-  generateBlocks();
-}, 2000);
 
 //Event Listeners
 addEventListener("keydown", (e) => {
