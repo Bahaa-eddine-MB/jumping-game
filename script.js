@@ -6,6 +6,8 @@ const ctx = canvas.getContext("2d");
 const currentScoreElement = document.getElementById("currentScoreValue");
 const bestScoreElement = document.getElementById("bestScoreValue");
 const timePassedElement = document.getElementById("timePassedValue");
+const enterToStartElement = document.getElementById("start");
+const hightScoreElement = document.getElementById("highScore");
 
 let gameStarted = false;
 let startingTime;
@@ -241,6 +243,8 @@ function generateBlocks() {
 let animationId = null;
 
 function startGame() {
+  hightScoreElement.style.display = "none";
+  enterToStartElement.style.display = "none";
   startingTime = Date.now();
   gameStarted = true;
   arrayBlocks = [];
@@ -254,6 +258,8 @@ function startGame() {
 function gameEnded() {
   gameStarted = false;
   time = 0;
+  enterToStartElement.style.display = "block";
+  enterToStartElement.innerText = "PRESS ENTER TO PLAY AGAIN";
   if (currentScore > bestScore) {
     bestScore = currentScore;
     localStorage.setItem("bestScore", bestScore);
@@ -271,6 +277,9 @@ function animate() {
   drawBackgroundLine();
   if (gameStarted) {
     currentScore += 1 + currentScore * 0.1 * time;
+    if (currentScore > bestScore && bestScore != 0) {
+      hightScoreElement.style.display = "block";
+    }
     currentScoreElement.innerText = Math.floor(currentScore);
     updateTimePassed();
     arrayBlocks.forEach((element, index) => {

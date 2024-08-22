@@ -77,6 +77,52 @@ p {
   padding: 10px;
 }
 
+
+#start {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: red;
+  color: white;
+  border: 2px solid white;
+  border-radius: 5px;
+  padding: 10px 20px;
+  animation: fade-in-out 2s ease-in-out infinite;
+}
+
+#highScore {
+  display: none;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: gold;
+  color: white;
+  border: 2px solid white;
+  border-radius: 5px;
+  padding: 10px 20px;
+  animation: fade-in-out 1s ease-in-out infinite;
+}
+
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+
+
+
+
+
 @media screen and (max-width: 768px) {
   body {
     flex-direction: column;
