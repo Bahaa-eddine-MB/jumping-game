@@ -4,6 +4,7 @@
 }
 
 body {
+  position: relative;
   background-color: antiquewhite;
   color: white;
   width: 100vw;
@@ -36,4 +37,78 @@ p {
   border: 1px solid black;
   margin: 1rem;
   border-radius: 15px;
+  width: 56vw;
+}
+
+#scoreboard {
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  color: black;
+}
+
+#currentScore {
+  display: flex;
+  gap: 4;
+}
+#bestScore {
+  display: flex;
+  gap: 4;
+}
+
+#timePassed {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 120px;
+  padding: 10px;
+  right: 23%;
+  display: flex;
+  gap: 4;
+}
+
+#scores {
+  position: absolute;
+  top: 0;
+  left: 23%;
+  margin-top: 120px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #canvas {
+    width: 90vw;
+  }
+
+  #timePassed,
+  #scores {
+    position: static;
+    margin-top: 0;
+    padding: 0;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  body {
+    font-size: 1rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  #canvas {
+    width: 80vw;
+  }
 }

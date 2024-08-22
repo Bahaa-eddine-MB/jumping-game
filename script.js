@@ -3,9 +3,23 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-let currentScore = 0;
-let bestScore = 0;
+const currentScoreElement = document.getElementById("currentScoreValue");
+const bestScoreElement = document.getElementById("bestScoreValue");
+const timePassedElement = document.getElementById("timePassedValue");
 
+let gameStarted = false;
+let startingTime;
+let time = 0;
+let currentScore = 0;
+let bestScore = localStorage.getItem("bestScore");
+
+if (bestScore === null) {
+  bestScore = 0;
+} else {
+  bestScore = parseInt(bestScore);
+}
+
+bestScoreElement.innerText = bestScore;
 let enemySpeed = 3;
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -188,13 +202,13 @@ let arrayBlocks = [];
 function blockColliding(player, block) {
   let s1 = Object.assign(Object.create(Object.getPrototypeOf(player)), player);
   let s2 = Object.assign(Object.create(Object.getPrototypeOf(block)), block);
-
+  s2.width -= 55;
   return !(
     (
       s1.x > s2.x + s2.width || // r1 is to right of r2
-      s1.x + 115 < s2.x || // r1 to the left of r2
+      s1.x + 105 < s2.x || // r1 to the left of r2
       s1.y > s2.y + s2.height || // r1 is below r2
-      s1.y + 50 < s2.y
+      s1.y + 100 < s2.y
     ) // r1 is above r2
   );
 }
@@ -213,8 +227,8 @@ function generateBlocks() {
   } else {
     arrayBlocks.push(
       new AvoidBlock(
-        getRandomNumber(30, 70),
-        getRandomNumber(50, 150),
+        getRandomNumber(30, 45),
+        getRandomNumber(50, 120),
         enemySpeed,
         false
       )
@@ -223,26 +237,59 @@ function generateBlocks() {
   enemySpeed += enemySpeed * 0.02;
   setTimeout(generateBlocks, timeDelay);
 }
+
 let animationId = null;
+
+function startGame() {
+  startingTime = Date.now();
+  gameStarted = true;
+  arrayBlocks = [];
+  player = new Player(5, 415);
+  if (currentScore != 0) {
+    requestAnimationFrame(animate);
+  }
+  currentScore = 0;
+}
+
+function gameEnded() {
+  gameStarted = false;
+  time = 0;
+  if (currentScore > bestScore) {
+    bestScore = currentScore;
+    localStorage.setItem("bestScore", bestScore);
+    bestScoreElement.innerText = bestScore;
+  }
+}
+function updateTimePassed() {
+  const timePassed = Math.floor((Date.now() - startingTime) / 1000);
+  timePassedElement.innerText = `${timePassed} s`;
+}
+
 function animate() {
   animationId = requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackgroundLine();
-  arrayBlocks.forEach((element, index) => {
-    element.slide();
-    if (blockColliding(player, element)) {
-      cancelAnimationFrame(animationId);
-    }
-    // Delete block that has left the screen
-    if (arrayBlocks.x + arrayBlocks.width <= 0) {
-      setTimeout(() => {
-        arrayBlocks.splice(index, 1);
-      }, 0);
-    }
-  });
+  if (gameStarted) {
+    currentScore += 1 + currentScore * 0.1 * time;
+    currentScoreElement.innerText = Math.floor(currentScore);
+    updateTimePassed();
+    arrayBlocks.forEach((element, index) => {
+      element.slide();
+      if (blockColliding(player, element)) {
+        cancelAnimationFrame(animationId);
+        gameEnded();
+      }
+      // Delete block that has left the screen
+      if (arrayBlocks.x + arrayBlocks.width <= 0) {
+        setTimeout(() => {
+          arrayBlocks.splice(index, 1);
+        }, 0);
+      }
+    });
+  }
+
   player.draw();
 }
-
 animate();
 
 setTimeout(() => {
@@ -251,7 +298,21 @@ setTimeout(() => {
 
 //Event Listeners
 addEventListener("keydown", (e) => {
-  if (e.code === "Space") {
+  if (e.code === "Space" && gameStarted) {
+    if (!player.shouldJump) {
+      player.jumpCounter = 0;
+      player.shouldJump = true;
+    }
+  }
+  if (e.code === "Enter") {
+    if (!gameStarted) {
+      startGame();
+    }
+  }
+});
+
+addEventListener("mousedown", (e) => {
+  if (e.button === 0 && gameStarted) {
     if (!player.shouldJump) {
       player.jumpCounter = 0;
       player.shouldJump = true;
