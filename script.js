@@ -259,6 +259,7 @@ function startGame() {
 }
 
 function gameEnded() {
+  enemySpeed = 3
   gameStarted = false;
   time = 0;
   enterToStartElement.style.display = "block";
