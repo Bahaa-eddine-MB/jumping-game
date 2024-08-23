@@ -331,10 +331,10 @@ animate();
 addEventListener("keydown", (e) => {
   if (e.code === "Space" && gameStarted) {
     if (!player.shouldJump) {
+      canScore = true;
       jumpSFX.play();
       player.jumpCounter = 0;
       player.shouldJump = true;
-      canScore = true;
     }
   }
   if (e.code === "Enter") {
