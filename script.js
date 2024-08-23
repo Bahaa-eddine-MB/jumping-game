@@ -247,6 +247,7 @@ function generateBlocks() {
 let animationId = null;
 
 function startGame() {
+  document.body.style.backgroundColor = "white"
   canvas.style.backgroundColor = "white";
   hightScoreElement.style.display = "none";
   enterToStartElement.style.display = "none";
@@ -291,27 +292,33 @@ function animate() {
   drawBackgroundLine(Math.floor(currentScore / 1000) % 2 === 0);
   if (gameStarted) {
     currentScore += 1 + currentScore * 0.1 * time;
-    if (Math.floor(currentScore / 1000) % 2 === 0) {
-      document.body.classList.remove("bodyDark");
-      canvas.style.backgroundColor = "white";
-      titleElement.classList.remove("dark");
-      const paragraphs = document.querySelectorAll("p");
-      paragraphs.forEach((p) => {
-        p.classList.remove("dark");
-      });
-    } else {
-      canvas.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-      const paragraphs = document.querySelectorAll("p");
-      paragraphs.forEach((p) => {
-        p.classList.add("dark");
-      });
-      document.body.classList.add("bodyDark");
-      canvas.classList.add("darkCanvas");
-      titleElement.classList.add("dark");
-    }
-    if (currentScore > bestScore && bestScore != 0) {
+    isNewScore = currentScore > bestScore && bestScore != 0;
+    if (isNewScore) {
       hightScoreElement.style.display = "block";
+      const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+      canvas.style.backgroundColor = "#" + randomColor;
+      document.body.style.backgroundColor = "#" + randomColor;
+    } else {
+      if (Math.floor(currentScore / 1000) % 2 === 0) {
+        document.body.classList.remove("bodyDark");
+        canvas.style.backgroundColor = "white";
+        titleElement.classList.remove("dark");
+        const paragraphs = document.querySelectorAll("p");
+        paragraphs.forEach((p) => {
+          p.classList.remove("dark");
+        });
+      } else {
+        canvas.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+        const paragraphs = document.querySelectorAll("p");
+        paragraphs.forEach((p) => {
+          p.classList.add("dark");
+        });
+        document.body.classList.add("bodyDark");
+        canvas.classList.add("darkCanvas");
+        titleElement.classList.add("dark");
+      }
     }
+
     currentScoreElement.innerText = Math.floor(currentScore);
     updateTimePassed();
     arrayBlocks.forEach((element, index) => {
