@@ -8,6 +8,10 @@ const bestScoreElement = document.getElementById("bestScoreValue");
 const timePassedElement = document.getElementById("timePassedValue");
 const enterToStartElement = document.getElementById("start");
 const hightScoreElement = document.getElementById("highScore");
+const titleElement = document.getElementById("title");
+const scoreboard = document.getElementById("scoreboard");
+
+canvas.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
 
 let gameStarted = false;
 let startingTime;
@@ -190,12 +194,12 @@ let player = new Player(5, 415);
 
 // functions
 
-function drawBackgroundLine() {
+function drawBackgroundLine(isBlack) {
   ctx.beginPath();
   ctx.moveTo(0, 500);
   ctx.lineTo(900, 500);
   ctx.lineWidth = 1.9;
-  ctx.strokeStyle = "black";
+  ctx.strokeStyle = isBlack ? "black" : "white";
   ctx.stroke();
 }
 
@@ -243,6 +247,7 @@ function generateBlocks() {
 let animationId = null;
 
 function startGame() {
+  canvas.style.backgroundColor = "white";
   hightScoreElement.style.display = "none";
   enterToStartElement.style.display = "none";
   startingTime = Date.now();
@@ -259,7 +264,11 @@ function startGame() {
 }
 
 function gameEnded() {
-  enemySpeed = 3
+  document.body.classList.remove("bodyDark");
+  canvas.classList.remove("dark");
+  titleElement.classList.remove("dark");
+  canvas.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
+  enemySpeed = 3;
   gameStarted = false;
   time = 0;
   enterToStartElement.style.display = "block";
@@ -270,6 +279,7 @@ function gameEnded() {
     bestScoreElement.innerText = bestScore;
   }
 }
+
 function updateTimePassed() {
   const timePassed = Math.floor((Date.now() - startingTime) / 1000);
   timePassedElement.innerText = `${timePassed} s`;
@@ -278,9 +288,27 @@ function updateTimePassed() {
 function animate() {
   animationId = requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBackgroundLine();
+  drawBackgroundLine(Math.floor(currentScore / 1000) % 2 === 0);
   if (gameStarted) {
     currentScore += 1 + currentScore * 0.1 * time;
+    if (Math.floor(currentScore / 1000) % 2 === 0) {
+      document.body.classList.remove("bodyDark");
+      canvas.style.backgroundColor = "white";
+      titleElement.classList.remove("dark");
+      const paragraphs = document.querySelectorAll("p");
+      paragraphs.forEach((p) => {
+        p.classList.remove("dark");
+      });
+    } else {
+      canvas.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+      const paragraphs = document.querySelectorAll("p");
+      paragraphs.forEach((p) => {
+        p.classList.add("dark");
+      });
+      document.body.classList.add("bodyDark");
+      canvas.classList.add("darkCanvas");
+      titleElement.classList.add("dark");
+    }
     if (currentScore > bestScore && bestScore != 0) {
       hightScoreElement.style.display = "block";
     }
@@ -300,7 +328,6 @@ function animate() {
       }
     });
   }
-
   player.draw();
 }
 animate();

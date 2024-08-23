@@ -32,6 +32,16 @@ p {
   color: black;
 }
 
+#scoreboard {
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  color: black;
+}
+
+.bodyDark{
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
 #canvas {
   background-color: white;
   border: 1px solid black;
@@ -40,11 +50,11 @@ p {
   width: 56vw;
 }
 
-#scoreboard {
-  font-family: Arial, sans-serif;
-  font-size: 20px;
-  color: black;
+.dark{
+  color: white;
 }
+
+
 
 #currentScore {
   display: flex;
@@ -117,10 +127,6 @@ p {
     opacity: 0;
   }
 }
-
-
-
-
 
 
 @media screen and (max-width: 768px) {
