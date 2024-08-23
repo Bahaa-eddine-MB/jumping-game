@@ -315,7 +315,7 @@ function updateTimePassed() {
 function animate() {
   animationId = requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBackgroundLine(Math.floor(currentScore / 100) % 2 === 0);
+  drawBackgroundLine(Math.floor(currentScore / 50) % 2 === 0);
   if (gameStarted) {
     thmeManagement();    
     currentScoreElement.innerText = Math.floor(currentScore);
@@ -324,6 +324,7 @@ function animate() {
   }
   player.draw();
 }
+
 animate();
 
 //Event Listeners
@@ -384,7 +385,7 @@ function thmeManagement() {
     canvas.style.backgroundColor = "#" + randomColor;
     document.body.style.backgroundColor = "#" + randomColor;
   } else {
-    if (Math.floor(currentScore / 100) % 2 === 0) {
+    if (Math.floor(currentScore / 50) % 2 === 0) {
       document.body.style.backgroundColor = "antiquewhite";
       canvas.style.backgroundColor = "white";
       titleElement.classList.remove("dark");
