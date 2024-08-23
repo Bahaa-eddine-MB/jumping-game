@@ -19,6 +19,7 @@ let gameHasEnded = false
 let startingTime;
 let currentScore = 0;
 let bestScore = localStorage.getItem("bestScore");
+let animationId = null;
 
 if (bestScore === null) {
   bestScore = 0;
@@ -191,7 +192,16 @@ class AvoidBlock {
 
 let player = new Player(5, 415);
 
-// add sound effects here
+
+//SFX
+let gameOverSFX = new Audio("./sounds/lost.mp3");
+let jumpSFX = new Audio("./sounds/jump.mp3");
+let gameMusicSFX = new Audio("./sounds/mario.mp3");
+let newScoreSFX = new Audio("./sounds/high-score.mp3");
+let startSFX = new Audio("./sounds/yeahoo.mp3");
+
+gameMusicSFX.loop = true
+newScoreSFX.loop = true
 
 // functions
 
@@ -255,9 +265,10 @@ function generateBlocks() {
   }
 }
 
-let animationId = null;
 
 function startGame() {
+  startSFX.play()
+  gameMusicSFX.play()
   arrayBlocks = [];
   enemySpeed = 3;
   canScore = true;
@@ -278,6 +289,9 @@ function startGame() {
 }
 
 function gameEnded() {
+  gameMusicSFX.pause()
+  newScoreSFX.pause()
+  gameOverSFX.play()
   document.body.classList.remove("bodyDark");
   canvas.classList.remove("dark");
   titleElement.classList.remove("dark");
@@ -301,7 +315,7 @@ function updateTimePassed() {
 function animate() {
   animationId = requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBackgroundLine(Math.floor(currentScore / 1000) % 2 === 0);
+  drawBackgroundLine(Math.floor(currentScore / 100) % 2 === 0);
   if (gameStarted) {
     thmeManagement();    
     currentScoreElement.innerText = Math.floor(currentScore);
@@ -316,6 +330,7 @@ animate();
 addEventListener("keydown", (e) => {
   if (e.code === "Space" && gameStarted) {
     if (!player.shouldJump) {
+      jumpSFX.play();
       player.jumpCounter = 0;
       player.shouldJump = true;
       canScore = true;
@@ -331,6 +346,7 @@ addEventListener("keydown", (e) => {
 addEventListener("mousedown", (e) => {
   if (e.button === 0 && gameStarted) {
     if (!player.shouldJump) {
+      jumpSFX.play();
       player.jumpCounter = 0;
       player.shouldJump = true;
     }
@@ -361,12 +377,14 @@ function blocksManagement() {
 function thmeManagement() {
   isNewScore = currentScore > bestScore && bestScore != 0;
   if (isNewScore) {
+    gameMusicSFX.pause()
+    newScoreSFX.play()
     hightScoreElement.style.display = "block";
     const randomColor = Math.floor(Math.random() * 16777215).toString(16);
     canvas.style.backgroundColor = "#" + randomColor;
     document.body.style.backgroundColor = "#" + randomColor;
   } else {
-    if (Math.floor(currentScore / 1000) % 2 === 0) {
+    if (Math.floor(currentScore / 100) % 2 === 0) {
       document.body.style.backgroundColor = "antiquewhite";
       canvas.style.backgroundColor = "white";
       titleElement.classList.remove("dark");
