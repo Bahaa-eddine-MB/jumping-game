@@ -217,7 +217,7 @@ function drawBackgroundLine(isBlack) {
 let arrayBlocks = [];
 
 //Returns true if past player past block
-function isPastBlock(player, block) {
+function isPastBlock(block) {
   return (
     player.x + 25 > block.x + block.width / 4 &&
     player.x + 25 < block.x + (block.width / 4) * 3
@@ -358,7 +358,8 @@ function blocksManagement() {
   arrayBlocks.forEach((element, index) => {
     element.speed = enemySpeed;
     element.slide();
-    if (isPastBlock(player, element) && canScore) {
+    
+    if (isPastBlock(element) && canScore) {
       canScore = false;
       currentScore += 10;
     }
