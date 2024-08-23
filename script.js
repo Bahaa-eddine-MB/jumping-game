@@ -296,9 +296,9 @@ function startGame() {
 }
 
 function gameEnded() {
+  gameOverSFX.play();
   gameMusicSFX.pause();
   newScoreSFX.pause();
-  gameOverSFX.play();
   document.body.classList.remove("bodyDark");
   canvas.classList.remove("dark");
   titleElement.classList.remove("dark");
