@@ -241,19 +241,23 @@ function generateBlocks() {
     );
   }
   enemySpeed += enemySpeed * 0.02;
-  setTimeout(generateBlocks, timeDelay);
+  if (gameStarted) {
+    setTimeout(generateBlocks, timeDelay);
+  }
 }
 
 let animationId = null;
 
 function startGame() {
-  document.body.style.backgroundColor = "white"
+  arrayBlocks = [];
+  enemySpeed = 3;
+  time = 0;
+  document.body.style.backgroundColor = "antiquewhite";
   canvas.style.backgroundColor = "white";
   hightScoreElement.style.display = "none";
   enterToStartElement.style.display = "none";
   startingTime = Date.now();
   gameStarted = true;
-  arrayBlocks = [];
   player = new Player(5, 415);
   if (currentScore != 0) {
     requestAnimationFrame(animate);
@@ -269,9 +273,8 @@ function gameEnded() {
   canvas.classList.remove("dark");
   titleElement.classList.remove("dark");
   canvas.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
-  enemySpeed = 3;
+
   gameStarted = false;
-  time = 0;
   enterToStartElement.style.display = "block";
   enterToStartElement.innerText = "PRESS ENTER TO PLAY AGAIN";
   if (currentScore > bestScore) {
@@ -292,33 +295,7 @@ function animate() {
   drawBackgroundLine(Math.floor(currentScore / 1000) % 2 === 0);
   if (gameStarted) {
     currentScore += 1 + currentScore * 0.1 * time;
-    isNewScore = currentScore > bestScore && bestScore != 0;
-    if (isNewScore) {
-      hightScoreElement.style.display = "block";
-      const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-      canvas.style.backgroundColor = "#" + randomColor;
-      document.body.style.backgroundColor = "#" + randomColor;
-    } else {
-      if (Math.floor(currentScore / 1000) % 2 === 0) {
-        document.body.classList.remove("bodyDark");
-        canvas.style.backgroundColor = "white";
-        titleElement.classList.remove("dark");
-        const paragraphs = document.querySelectorAll("p");
-        paragraphs.forEach((p) => {
-          p.classList.remove("dark");
-        });
-      } else {
-        canvas.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-        const paragraphs = document.querySelectorAll("p");
-        paragraphs.forEach((p) => {
-          p.classList.add("dark");
-        });
-        document.body.classList.add("bodyDark");
-        canvas.classList.add("darkCanvas");
-        titleElement.classList.add("dark");
-      }
-    }
-
+    scoring();
     currentScoreElement.innerText = Math.floor(currentScore);
     updateTimePassed();
     arrayBlocks.forEach((element, index) => {
@@ -362,3 +339,32 @@ addEventListener("mousedown", (e) => {
     }
   }
 });
+
+function scoring() {
+  isNewScore = currentScore > bestScore && bestScore != 0;
+  if (isNewScore) {
+    hightScoreElement.style.display = "block";
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+    canvas.style.backgroundColor = "#" + randomColor;
+    document.body.style.backgroundColor = "#" + randomColor;
+  } else {
+    if (Math.floor(currentScore / 1000) % 2 === 0) {
+      document.body.style.backgroundColor = "antiquewhite";
+      canvas.style.backgroundColor = "white";
+      titleElement.classList.remove("dark");
+      const paragraphs = document.querySelectorAll("p");
+      paragraphs.forEach((p) => {
+        p.classList.remove("dark");
+      });
+    } else {
+      canvas.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+      document.body.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
+      const paragraphs = document.querySelectorAll("p");
+      paragraphs.forEach((p) => {
+        p.classList.add("dark");
+      });
+      canvas.classList.add("darkCanvas");
+      titleElement.classList.add("dark");
+    }
+  }
+}
