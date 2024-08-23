@@ -13,9 +13,10 @@ const scoreboard = document.getElementById("scoreboard");
 
 canvas.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
 
+let canScore = true;
 let gameStarted = false;
+let gameHasEnded = false
 let startingTime;
-let time = 0;
 let currentScore = 0;
 let bestScore = localStorage.getItem("bestScore");
 
@@ -205,6 +206,14 @@ function drawBackgroundLine(isBlack) {
 
 let arrayBlocks = [];
 
+//Returns true if past player past block
+function isPastBlock(player, block) {
+  return (
+    player.x + 25 > block.x + block.width / 4 &&
+    player.x + 25 < block.x + (block.width / 4) * 3
+  );
+}
+
 function blockColliding(player, block) {
   let s1 = Object.assign(Object.create(Object.getPrototypeOf(player)), player);
   let s2 = Object.assign(Object.create(Object.getPrototypeOf(block)), block);
@@ -219,7 +228,7 @@ function blockColliding(player, block) {
   );
 }
 
-function generateBlocks() {
+function generateBlocks() {  
   let timeDelay = getRandomNumber(800, 2500);
   if (Math.random() < 0.2) {
     arrayBlocks.push(
@@ -251,7 +260,7 @@ let animationId = null;
 function startGame() {
   arrayBlocks = [];
   enemySpeed = 3;
-  time = 0;
+  canScore = true;
   document.body.style.backgroundColor = "antiquewhite";
   canvas.style.backgroundColor = "white";
   hightScoreElement.style.display = "none";
@@ -259,7 +268,7 @@ function startGame() {
   startingTime = Date.now();
   gameStarted = true;
   player = new Player(5, 415);
-  if (currentScore != 0) {
+  if (gameHasEnded) {
     requestAnimationFrame(animate);
   }
   currentScore = 0;
@@ -273,7 +282,7 @@ function gameEnded() {
   canvas.classList.remove("dark");
   titleElement.classList.remove("dark");
   canvas.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
-
+  gameHasEnded = true
   gameStarted = false;
   enterToStartElement.style.display = "block";
   enterToStartElement.innerText = "PRESS ENTER TO PLAY AGAIN";
@@ -294,23 +303,10 @@ function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackgroundLine(Math.floor(currentScore / 1000) % 2 === 0);
   if (gameStarted) {
-    currentScore += 1 + currentScore * 0.1 * time;
-    scoring();
+    thmeManagement();    
     currentScoreElement.innerText = Math.floor(currentScore);
     updateTimePassed();
-    arrayBlocks.forEach((element, index) => {
-      element.slide();
-      if (blockColliding(player, element)) {
-        cancelAnimationFrame(animationId);
-        gameEnded();
-      }
-      // Delete block that has left the screen
-      if (arrayBlocks.x + arrayBlocks.width <= 0) {
-        setTimeout(() => {
-          arrayBlocks.splice(index, 1);
-        }, 0);
-      }
-    });
+    blocksManagement();
   }
   player.draw();
 }
@@ -322,6 +318,7 @@ addEventListener("keydown", (e) => {
     if (!player.shouldJump) {
       player.jumpCounter = 0;
       player.shouldJump = true;
+      canScore = true;
     }
   }
   if (e.code === "Enter") {
@@ -340,7 +337,28 @@ addEventListener("mousedown", (e) => {
   }
 });
 
-function scoring() {
+function blocksManagement() {
+  arrayBlocks.forEach((element, index) => {
+    element.speed = enemySpeed;
+    element.slide();
+    if (isPastBlock(player, element) && canScore) {
+      canScore = false;
+      currentScore += 10;
+    }
+    if (blockColliding(player, element)) {
+      cancelAnimationFrame(animationId);
+      gameEnded();
+    }
+    // Delete block that has left the screen
+    if (arrayBlocks.x + arrayBlocks.width <= 0) {
+      setTimeout(() => {
+        arrayBlocks.splice(index, 1);
+      }, 0);
+    }
+  });
+}
+
+function thmeManagement() {
   isNewScore = currentScore > bestScore && bestScore != 0;
   if (isNewScore) {
     hightScoreElement.style.display = "block";
