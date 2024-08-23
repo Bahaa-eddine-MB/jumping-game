@@ -191,8 +191,15 @@ class AvoidBlock {
 
 let player = new Player(5, 415);
 
-// add sound effects here
+//SFX
+let gameOverSFX = new Audio("./sounds/lost.mp3");
+let jumpSFX = new Audio("./sounds/jump.mp3");
+let gameMusicSFX = new Audio("./sounds/mario.mp3");
+let newScoreSFX = new Audio("./sounds/high-score.mp3");
+let startSFX = new Audio("./sounds/yeahoo.mp3");
 
+gameMusicSFX.loop = true;
+newScoreSFX.loop = true;
 // functions
 
 function drawBackgroundLine(isBlack) {
@@ -267,6 +274,8 @@ function generateBlocks() {
 let animationId = null;
 
 function startGame() {
+  startSFX.play();
+  gameMusicSFX.play();
   arrayBlocks = [];
   enemySpeed = 3;
   canScore = true;
@@ -287,6 +296,9 @@ function startGame() {
 }
 
 function gameEnded() {
+  gameMusicSFX.pause();
+  newScoreSFX.pause();
+  gameOverSFX.play();
   document.body.classList.remove("bodyDark");
   canvas.classList.remove("dark");
   titleElement.classList.remove("dark");
@@ -342,6 +354,8 @@ addEventListener("keydown", (e) => {
 addEventListener("mousedown", (e) => {
   if (e.button === 0 && gameStarted) {
     if (!player.shouldJump) {
+      canScore = true;
+      jumpSFX.play();
       player.jumpCounter = 0;
       player.shouldJump = true;
     }
@@ -352,7 +366,7 @@ function blocksManagement() {
   arrayBlocks.forEach((element, index) => {
     element.speed = enemySpeed;
     element.slide();
-    
+
     if (isPastBlock(element) && canScore) {
       canScore = false;
       currentScore += 10;
@@ -373,6 +387,8 @@ function blocksManagement() {
 function thmeManagement() {
   isNewScore = currentScore > bestScore && bestScore != 0;
   if (isNewScore) {
+    gameMusicSFX.pause();
+    newScoreSFX.play();
     hightScoreElement.style.display = "block";
     const randomColor = Math.floor(Math.random() * 16777215).toString(16);
     canvas.style.backgroundColor = "#" + randomColor;
