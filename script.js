@@ -45,7 +45,7 @@ class Player {
 
   draw() {
     this.jump();
-    var marioArray = [
+    let marioArray = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
@@ -67,11 +67,11 @@ class Player {
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ];
     //starting position
-    var xPos = this.x;
-    var yPos = this.y;
+    let xPos = this.x;
+    let yPos = this.y;
 
-    for (var i = 0; i < marioArray.length; i++) {
-      for (var r = 0; r < marioArray[i].length; r++) {
+    for (let i = 0; i < marioArray.length; i++) {
+      for (let r = 0; r < marioArray[i].length; r++) {
         ctx.fillRect(xPos, yPos, 5, 5);
         //black
         if (marioArray[i][r] === 0) {
@@ -140,13 +140,13 @@ function drawBlock(ctx, x, y, width, height) {
     [0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0],
   ];
 
-  var blockX = x; // Starting X position for the block
-  var blockY = y; // Starting Y position for the block
-  var pixelWidth = width / blockArray[0].length; // Calculate pixel width based on desired width
-  var pixelHeight = height / blockArray.length; // Calculate pixel height based on desired height
+  let blockX = x; // Starting X position for the block
+  let blockY = y; // Starting Y position for the block
+  let pixelWidth = width / blockArray[0].length; // Calculate pixel width based on desired width
+  let pixelHeight = height / blockArray.length; // Calculate pixel height based on desired height
 
-  for (var i = 0; i < blockArray.length; i++) {
-    for (var j = 0; j < blockArray[i].length; j++) {
+  for (let i = 0; i < blockArray.length; i++) {
+    for (let j = 0; j < blockArray[i].length; j++) {
       // Determine the color based on the number
       if (blockArray[i][j] === 0) {
         ctx.fillStyle = "yellow"; // Black
